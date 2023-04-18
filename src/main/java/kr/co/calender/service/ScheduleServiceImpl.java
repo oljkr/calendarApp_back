@@ -70,4 +70,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 		dao.insertSchedule(name, startDate, endDate);
 	}
+	
+	@Override
+	public void deleteSchedule(int scheNo) throws Exception {
+		dao.deleteSchedule(scheNo);
+	}
 }

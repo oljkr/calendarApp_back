@@ -12,4 +12,6 @@ public interface ScheduleService {
 	public List<Schedule> listDay(String date) throws Exception;
 	
 	public void addSchedule(Temp temp) throws Exception;
+	
+	public void deleteSchedule(int scheNo) throws Exception;
 }

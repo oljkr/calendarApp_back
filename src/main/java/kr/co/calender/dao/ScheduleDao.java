@@ -90,5 +90,18 @@ public class ScheduleDao {
 		}//end
 		return cnt;
 	}//insertSchedule() end
+	
+	public int deleteSchedule(int scheNo) {
+		int cnt=0;
+		try {
+			sql=new StringBuilder();
+			sql.append(" DELETE FROM schedule ");
+			sql.append(" WHERE sche_no= ? ");
+			cnt=jdbcTemplate.update(sql.toString(), scheNo);
+		}catch (Exception e) {
+			System.out.println("일정삭제실패:" + e);
+		}//end
+		return cnt;
+	}//deleteSchedule() end
 
 }

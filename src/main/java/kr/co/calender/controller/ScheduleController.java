@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,9 +46,16 @@ public class ScheduleController {
 	
 	@PostMapping
 	public ResponseEntity register(@RequestBody Temp temp) throws Exception {
-	log.info("postSchedule");
-	service.addSchedule(temp);
-	return new ResponseEntity(HttpStatus.OK);
+		log.info("postSchedule");
+		service.addSchedule(temp);
+		return new ResponseEntity(HttpStatus.OK);
+	}
+	
+	@DeleteMapping(params= {"scheNo"})
+	public ResponseEntity delete(@RequestParam("scheNo") int scheNo) throws Exception {
+		log.info("deleteSchedule");
+		service.deleteSchedule(scheNo);
+		return new ResponseEntity(HttpStatus.OK);
 	}
 
 }
