@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.calender.domain.Schedule;
 import kr.co.calender.domain.Temp;
+import kr.co.calender.domain.TempUpdate;
 import kr.co.calender.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,11 +44,25 @@ public class ScheduleController {
 		return new ResponseEntity<>(service.listDay(date), HttpStatus.OK);
 	}
 	
+	@GetMapping(params= {"scheNo"})
+	public ResponseEntity<Schedule> listScheNo(@RequestParam("scheNo") int scheNo) throws Exception {
+		log.info("listScheNo");
+	
+		return new ResponseEntity<>(service.listScheNo(scheNo), HttpStatus.OK);
+	}
+	
 	
 	@PostMapping
 	public ResponseEntity register(@RequestBody Temp temp) throws Exception {
 		log.info("postSchedule");
 		service.addSchedule(temp);
+		return new ResponseEntity(HttpStatus.OK);
+	}
+	
+	@PutMapping
+	public ResponseEntity update(@RequestBody TempUpdate tempUpdate) throws Exception {
+		log.info("putSchedule");
+		service.editSchedule(tempUpdate);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 	

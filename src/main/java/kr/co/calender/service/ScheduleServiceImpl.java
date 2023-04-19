@@ -11,6 +11,7 @@ import kr.co.calender.controller.ScheduleController;
 import kr.co.calender.dao.ScheduleDao;
 import kr.co.calender.domain.Schedule;
 import kr.co.calender.domain.Temp;
+import kr.co.calender.domain.TempUpdate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +32,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 		String reDate=date.substring(0, 4)+"-"+date.substring(4,6)+"-"+date.substring(6);
 		System.out.println(reDate);
 		return dao.selectDay(date);
+	}
+	
+	@Override
+	public Schedule listScheNo(int scheNo) throws Exception {
+		System.out.println(scheNo);
+		return dao.selectSchedule(scheNo);
 	}
 	
 	@Override
@@ -72,7 +79,47 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 	
 	@Override
+	public void editSchedule(TempUpdate tempUpdate) throws Exception {
+		log.info(tempUpdate.toString());
+//		String reDate=date.substring(0, 4)+"-"+date.substring(4,6)+"-"+date.substring(6);
+//		System.out.println(reDate);
+//		 startDate: 2023-04-15 00:00:00.000Z
+		String name=tempUpdate.getName(); 
+		LocalDateTime startDate;
+		LocalDateTime endDate;
+		log.info("a");
+		if(tempUpdate.getStartTime().length()==1) {
+			String tmp = tempUpdate.getStartDate().substring(0, 10)+" 0"+tempUpdate.getStartTime()+":00:00";
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			startDate = LocalDateTime.parse(tmp, formatter);
+		}else {
+			String tmp=tempUpdate.getStartDate().substring(0, 10)+" "+tempUpdate.getStartTime()+":00:00";
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			startDate = LocalDateTime.parse(tmp, formatter);
+		}
+		
+		if(tempUpdate.getEndTime().length()==1) {
+			String tmp = tempUpdate.getStartDate().substring(0, 10)+" 0"+tempUpdate.getEndTime()+":00:00";
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			endDate = LocalDateTime.parse(tmp, formatter);
+		}else {
+			String tmp=tempUpdate.getStartDate().substring(0, 10)+" "+tempUpdate.getEndTime()+":00:00";
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			endDate = LocalDateTime.parse(tmp, formatter);
+		}	
+		
+//		String str = "2021-11-05 13:47:13.248";
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+//		LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
+//		System.out.println(dateTime);
+
+		dao.updateSchedule(tempUpdate.getScheNo() ,name, startDate, endDate);
+	}
+	
+	@Override
 	public void deleteSchedule(int scheNo) throws Exception {
 		dao.deleteSchedule(scheNo);
 	}
+	
+	
 }

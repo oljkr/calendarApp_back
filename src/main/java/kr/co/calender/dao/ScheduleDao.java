@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import kr.co.calender.domain.Schedule;
-import kr.co.calender.domain.Temp;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -56,23 +55,26 @@ public class ScheduleDao {
 			sql.append(" FROM schedule ");
 			sql.append(" where DATE(start_date)='"+date+"' ");
 			
-			RowMapper<Schedule> rowMapper=new RowMapper<Schedule>() {
-				@Override
-				public Schedule mapRow(ResultSet rs, int rowNum) throws SQLException {
-					Schedule schedule = new Schedule();
-					
-					schedule.setScheNo(rs.getLong("sche_no"));
-					schedule.setName(rs.getString("name"));
-					schedule.setStartDate(rs.getTimestamp("start_date").toLocalDateTime());
-					schedule.setEndDate(rs.getTimestamp("end_date").toLocalDateTime());
-			
-					return schedule;
-				}//mapRow() end
-			};//rowMapper end
-			
-			results = jdbcTemplate.query(sql.toString(), rowMapper);
+			results = jdbcTemplate.query(sql.toString(), new ScheduleRowMapper());
 		}catch (Exception e) {
 			System.out.println("날짜 선택 일정 목록 자료읽기 실패:" +e);
+		}//end
+		
+		return results;
+	}
+	
+	public Schedule selectSchedule(int scheNo) throws Exception {
+		Schedule results = null;
+		try {
+			sql=new StringBuilder();
+			sql.append(" SELECT sche_no, name, start_date, end_date ");
+			sql.append(" FROM schedule ");
+			sql.append(" where sche_no='"+scheNo+"' ");
+			
+			results = jdbcTemplate.queryForObject(sql.toString(), new ScheduleRowMapper());
+		}catch (Exception e) {
+			System.out.println("선택 일정 세부 자료읽기 실패:" +e);
+			return null;
 		}//end
 		
 		return results;
@@ -90,6 +92,20 @@ public class ScheduleDao {
 		}//end
 		return cnt;
 	}//insertSchedule() end
+	
+	public int updateSchedule(int scheNo, String name, LocalDateTime startDate, LocalDateTime endDate) {
+		int cnt=0;
+		try {
+			sql=new StringBuilder();
+			sql.append(" UPDATE schedule ");
+			sql.append(" SET name = ?, start_date = ?, end_date = ? ");
+			sql.append(" WHERE sche_no = ? ");
+			cnt=jdbcTemplate.update(sql.toString(), name, startDate, endDate, scheNo);
+		}catch (Exception e) {
+			System.out.println("일정수정실패:" + e);
+		}//end
+		return cnt;
+	}//updateSchedule() end
 	
 	public int deleteSchedule(int scheNo) {
 		int cnt=0;
